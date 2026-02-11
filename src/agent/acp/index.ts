@@ -689,6 +689,11 @@ export class AcpAgent {
       setTimeout(() => {
         if (this.pendingPermissions.has(requestId)) {
           this.pendingPermissions.delete(requestId);
+
+          // Emit timeout error message to frontend
+          const toolTitle = data.toolCall?.title || 'Tool';
+          this.emitErrorMessage(`Permission request for "${toolTitle}" timed out after 70 seconds. Request was automatically rejected.`);
+
           reject(new Error('Permission request timed out'));
         }
       }, 70000);
