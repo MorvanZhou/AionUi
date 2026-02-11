@@ -12,12 +12,13 @@ import { NavigationInterceptor } from '@/common/navigation';
 import { uuid } from '@/common/utils';
 import type { AcpBackend, AcpPermissionRequest, AcpResult, AcpSessionUpdate, ToolCallUpdate } from '@/types/acpTypes';
 import { AcpErrorType, createAcpError } from '@/types/acpTypes';
+import { shell } from 'electron';
 import { spawn } from 'child_process';
 import { promises as fs } from 'fs';
 import * as path from 'path';
 import { AcpConnection } from './AcpConnection';
 import { AcpApprovalStore, createAcpApprovalKey } from './ApprovalStore';
-import { CLAUDE_YOLO_SESSION_MODE, QWEN_YOLO_SESSION_MODE } from './constants';
+import { CLAUDE_YOLO_SESSION_MODE, QWEN_YOLO_SESSION_MODE, CODEBUDDY_YOLO_SESSION_MODE } from './constants';
 import { getClaudeModel } from './utils';
 
 /**
@@ -213,6 +214,7 @@ export class AcpAgent {
         const yoloModeMap: Partial<Record<AcpBackend, string>> = {
           claude: CLAUDE_YOLO_SESSION_MODE,
           qwen: QWEN_YOLO_SESSION_MODE,
+          codebuddy: CODEBUDDY_YOLO_SESSION_MODE,
         };
         const sessionMode = yoloModeMap[this.extra.backend];
         if (sessionMode) {
@@ -752,7 +754,6 @@ export class AcpAgent {
 
     // Try to open the URL in default browser
     try {
-      const { shell } = require('electron');
       shell
         .openExternal(url)
         .then(() => {
@@ -1115,9 +1116,9 @@ export class AcpAgent {
               .catch((error) => {
                 console.warn('[AcpAgent] CodeBuddy authentication error:', error);
               });
-            
+
             // Give the authentication request a moment to potentially emit authUrl
-            await new Promise(resolve => setTimeout(resolve, 500));
+            await new Promise((resolve) => setTimeout(resolve, 500));
           }
         } catch (error) {
           console.warn('CodeBuddy authentication initiation failed:', error);
@@ -1136,8 +1137,8 @@ export class AcpAgent {
           // For CodeBuddy, if we got an authUrl, that's normal - user is authenticating
           console.log('[AcpAgent] Waiting for CodeBuddy user authentication via browser');
           // Wait a bit longer for user to complete OAuth
-          await new Promise(resolve => setTimeout(resolve, 2000));
-          
+          await new Promise((resolve) => setTimeout(resolve, 2000));
+
           // Try one more time
           try {
             await this.createOrResumeSession();

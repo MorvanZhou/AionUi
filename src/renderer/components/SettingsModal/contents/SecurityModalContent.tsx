@@ -36,7 +36,7 @@ const BUILTIN_AGENTS: AgentItem[] = [{ id: 'gemini', name: 'Gemini CLI', type: '
 const EXCLUDED_ACP_BACKENDS: AcpBackendAll[] = ['gemini', 'custom'];
 
 // Verified ACP backends that support yoloMode via session/set_mode
-const YOLO_SUPPORTED_BACKENDS: AcpBackendAll[] = ['claude', 'qwen', 'goose', 'codex'];
+const YOLO_SUPPORTED_BACKENDS: AcpBackendAll[] = ['claude', 'qwen', 'goose', 'codex', 'codebuddy'];
 
 // ACP backends without permission system (auto-approve by default, no config needed)
 const YOLO_NOT_NEEDED_BACKENDS: AcpBackendAll[] = ['droid', 'kimi', 'openclaw-gateway'];
