@@ -258,7 +258,7 @@ const Guid: React.FC = () => {
   // 支持在初始化页展示 Codex（MCP）选项，先做 UI 占位
   // 对于自定义代理，使用 "custom:uuid" 格式来区分多个自定义代理
   // For custom agents, we store "custom:uuid" format to distinguish between multiple custom agents
-  const [selectedAgentKey, _setSelectedAgentKey] = useState<string>('gemini');
+  const [selectedAgentKey, _setSelectedAgentKey] = useState<string>('codebuddy');
 
   // 封装 setSelectedAgentKey 以同时保存到 storage
   // Wrap setSelectedAgentKey to also save to storage

@@ -1,6 +1,6 @@
 import FlexFullContainer from '@/renderer/components/FlexFullContainer';
 import { isElectronDesktop } from '@/renderer/utils/platform';
-import { Communication, Computer, Earth, Gemini, Info, LinkCloud, Robot, Shield, System, Toolkit, Code } from '@icon-park/react';
+import { Communication, Computer, Earth, Info, LinkCloud, Robot, Shield, System, Toolkit, Code } from '@icon-park/react';
 import classNames from 'classnames';
 import React, { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -17,11 +17,6 @@ const SettingsSider: React.FC<{ collapsed?: boolean }> = ({ collapsed = false })
 
   const menus = useMemo(() => {
     const items = [
-      {
-        label: t('settings.gemini'),
-        icon: <Gemini />,
-        path: 'gemini',
-      },
       {
         label: t('settings.codebuddy', { defaultValue: 'CodeBuddy' }),
         icon: <Code />,

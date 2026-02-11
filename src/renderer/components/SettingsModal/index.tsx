@@ -117,7 +117,7 @@ export const SubModal: React.FC<SubModalProps> = ({ visible, onCancel, title, ch
  * openSettings('system');
  * ```
  */
-const SettingsModal: React.FC<SettingsModalProps> = ({ visible, onCancel, defaultTab = 'gemini' }) => {
+const SettingsModal: React.FC<SettingsModalProps> = ({ visible, onCancel, defaultTab = 'model' }) => {
   const { t } = useTranslation();
   const [activeTab, setActiveTab] = useState<SettingTab>(defaultTab);
   const [isMobile, setIsMobile] = useState(false);
@@ -160,11 +160,11 @@ const SettingsModal: React.FC<SettingsModalProps> = ({ visible, onCancel, defaul
   // WebUI 选项仅在桌面端显示，防止越权访问 / WebUI option only shown on desktop to prevent unauthorized access
   const menuItems = useMemo((): Array<{ key: SettingTab; label: string; icon: React.ReactNode }> => {
     const items: Array<{ key: SettingTab; label: string; icon: React.ReactNode }> = [
-      {
-        key: 'gemini',
-        label: t('settings.gemini'),
-        icon: <Gemini theme='outline' size='20' fill={iconColors.secondary} />,
-      },
+      // {
+      //   key: 'gemini',
+      //   label: t('settings.gemini'),
+      //   icon: <Gemini theme='outline' size='20' fill={iconColors.secondary} />,
+      // },
       {
         key: 'model',
         label: t('settings.model'),
@@ -212,8 +212,8 @@ const SettingsModal: React.FC<SettingsModalProps> = ({ visible, onCancel, defaul
   // 渲染当前选中的设置内容 / Render current selected settings content
   const renderContent = () => {
     switch (activeTab) {
-      case 'gemini':
-        return <GeminiModalContent onRequestClose={onCancel} />;
+      // case 'gemini':
+      //   return <GeminiModalContent onRequestClose={onCancel} />;
       case 'model':
         return <ModelModalContent />;
       case 'agent':

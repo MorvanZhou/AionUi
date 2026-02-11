@@ -36,7 +36,7 @@ export const ASSISTANT_PRESETS: AssistantPreset[] = [
       'en-US': 'cowork-skills.md',
       'zh-CN': 'cowork-skills.zh-CN.md',
     },
-    defaultEnabledSkills: ['skill-creator', 'pptx', 'docx', 'pdf', 'xlsx'],
+    defaultEnabledSkills: ['tcampos', 'pptx', 'docx', 'pdf', 'xlsx'],
     nameI18n: {
       'en-US': 'Cowork',
       'zh-CN': 'Cowork',
