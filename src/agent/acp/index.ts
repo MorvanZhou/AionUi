@@ -148,6 +148,9 @@ export class AcpAgent {
     this.connection.onDisconnect = (error) => {
       this.handleDisconnect(error);
     };
+    this.connection.onAuthUrlRequired = (url: string) => {
+      this.handleAuthUrlRequired(url);
+    };
   }
 
   /**
@@ -732,6 +735,39 @@ export class AcpAgent {
     this.statusMessageId = null;
   }
 
+  private handleAuthUrlRequired(url: string): void {
+    console.log('[AcpAgent] Opening authentication URL in browser:', url);
+
+    const infoMessage: TMessage = {
+      id: uuid(),
+      conversation_id: this.id,
+      type: 'text',
+      position: 'left',
+      createdAt: Date.now(),
+      content: {
+        content: `Authentication required. A browser window will open automatically. If it doesn't, please visit:\n${url}\n\nOnce authenticated, the conversation will continue automatically.`,
+      },
+    };
+    this.emitMessage(infoMessage);
+
+    // Try to open the URL in default browser
+    try {
+      const { shell } = require('electron');
+      shell
+        .openExternal(url)
+        .then(() => {
+          console.log('[AcpAgent] Browser opened for authentication');
+        })
+        .catch((error: Error) => {
+          console.error('[AcpAgent] Failed to open auth URL:', error);
+          // Still emit info, user can manually visit the URL
+        });
+    } catch (error) {
+      // Fallback if not in Electron environment
+      console.warn('[AcpAgent] Not in Electron environment, cannot open browser');
+    }
+  }
+
   private handleFileOperation(operation: { method: string; path: string; content?: string; sessionId: string }): void {
     // 创建文件操作消息显示在UI中
     const fileOperationMessage: TMessage = {
@@ -1063,6 +1099,29 @@ export class AcpAgent {
         await this.ensureQwenAuth();
       } else if (this.extra.backend === 'claude') {
         await this.ensureClaudeAuth();
+      } else if (this.extra.backend === 'codebuddy') {
+        // CodeBuddy uses ACP authenticate method for authentication
+        // This will trigger onAuthUrlRequired callback when user needs to login
+        try {
+          if (result?.authMethods?.[0]) {
+            // Send authentication request, but don't wait for completion
+            // The authUrl will be handled by onAuthUrlRequired callback
+            const authMethodId = String(result.authMethods[0].id || result.authMethods[0].type || '');
+            this.connection
+              .authenticate(authMethodId)
+              .then(() => {
+                console.log('[AcpAgent] CodeBuddy authentication completed');
+              })
+              .catch((error) => {
+                console.warn('[AcpAgent] CodeBuddy authentication error:', error);
+              });
+            
+            // Give the authentication request a moment to potentially emit authUrl
+            await new Promise(resolve => setTimeout(resolve, 500));
+          }
+        } catch (error) {
+          console.warn('CodeBuddy authentication initiation failed:', error);
+        }
       }
 
       // 预热后重试创建session（同时尝试恢复会话）
@@ -1072,9 +1131,27 @@ export class AcpAgent {
         this.emitStatusMessage('authenticated');
         return;
       } catch (error) {
-        // If still failing, guide user to login manually
-        // 如果仍然失败，引导用户手动登录
-        this.emitStatusMessage('error');
+        // If still failing, check if we're waiting for user authentication
+        if (this.extra.backend === 'codebuddy') {
+          // For CodeBuddy, if we got an authUrl, that's normal - user is authenticating
+          console.log('[AcpAgent] Waiting for CodeBuddy user authentication via browser');
+          // Wait a bit longer for user to complete OAuth
+          await new Promise(resolve => setTimeout(resolve, 2000));
+          
+          // Try one more time
+          try {
+            await this.createOrResumeSession();
+            this.emitStatusMessage('authenticated');
+            return;
+          } catch (retryError) {
+            console.warn('[AcpAgent] Session creation still failing after user auth:', retryError);
+            this.emitStatusMessage('error');
+            throw new Error('Failed to create CodeBuddy session after authentication');
+          }
+        } else {
+          // If still failing for other backends, guide user to login manually
+          this.emitStatusMessage('error');
+        }
       }
     } catch (error) {
       this.emitStatusMessage('error');

@@ -46,6 +46,10 @@ export interface IConfigStorageRefer {
     };
   };
   'acp.customAgents'?: AcpBackendConfig[];
+  'codebuddy.config'?: {
+    CODEBUDDY_API_KEY?: string;
+    CODEBUDDY_INTERNET_ENVIRONMENT?: string;
+  };
   'model.config': IProvider[];
   'mcp.config': IMcpServer[];
   'mcp.agentInstallStatus': Record<string, string[]>;

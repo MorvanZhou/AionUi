@@ -103,6 +103,27 @@ class AcpAgentManager extends BaseAgentManager<AcpAgentManagerData, AcpPermissio
         if (!cliPath && backendConfig?.cliCommand) {
           cliPath = backendConfig.cliCommand;
         }
+
+        // Handle CodeBuddy environment variables from UI configuration
+        // 处理来自 UI 配置的 CodeBuddy 环境变量
+        if (data.backend === 'codebuddy') {
+          try {
+            const codebuddyConfig = await ProcessConfig.get('codebuddy.config');
+            if (codebuddyConfig) {
+              customEnv = {
+                ...customEnv,
+                CODEBUDDY_API_KEY: codebuddyConfig.CODEBUDDY_API_KEY || '',
+                CODEBUDDY_INTERNET_ENVIRONMENT: codebuddyConfig.CODEBUDDY_INTERNET_ENVIRONMENT || 'overseas',
+              };
+              console.log('[AcpAgentManager] CodeBuddy configured with environment:', {
+                CODEBUDDY_INTERNET_ENVIRONMENT: codebuddyConfig.CODEBUDDY_INTERNET_ENVIRONMENT,
+                CODEBUDDY_API_KEY: codebuddyConfig.CODEBUDDY_API_KEY ? '***' : 'not set',
+              });
+            }
+          } catch (error) {
+            console.warn('[AcpAgentManager] Failed to load CodeBuddy config:', error);
+          }
+        }
       } else {
         // backend === 'custom' but no customAgentId - this is an invalid state
         // 自定义后端但缺少 customAgentId - 这是无效状态

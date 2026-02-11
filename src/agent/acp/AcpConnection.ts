@@ -53,9 +53,9 @@ function loadShellEnvironment(): Record<string, string> {
 
   try {
     const shell = process.env.SHELL || '/bin/bash';
-    // Use -i (interactive) and -l (login) to load all shell configs
-    // including .bashrc, .zshrc, .bash_profile, .zprofile, etc.
-    const command = `${shell} -i -l -c 'env' 2>/dev/null`;
+    // Use -l (login) to load shell configs, avoid -i to prevent job control/TTY issues
+    // including .bash_profile, .zprofile, etc.
+    const command = `${shell} -l -c 'env' 2>/dev/null`;
 
     const output = execSync(command, {
       encoding: 'utf-8',
@@ -218,6 +218,8 @@ export class AcpConnection {
   public onFileOperation: (operation: { method: string; path: string; content?: string; sessionId: string }) => void = () => {};
   // Disconnect callback - called when child process exits unexpectedly during runtime
   public onDisconnect: (error: { code: number | null; signal: NodeJS.Signals | null }) => void = () => {};
+  // Handler for CodeBuddy authUrl notification - called when browser authentication is needed
+  public onAuthUrlRequired: (url: string) => void = () => {};
 
   // Track if initial setup is complete (to distinguish startup errors from runtime exits)
   private isSetupComplete = false;
@@ -230,6 +232,7 @@ export class AcpConnection {
   }
 
   async connect(backend: AcpBackend, cliPath?: string, workingDir: string = process.cwd(), acpArgs?: string[], customEnv?: Record<string, string>): Promise<void> {
+    console.log('[AcpConnection] connect() called with backend:', backend, 'cliPath:', cliPath);
     if (this.child) {
       this.disconnect();
     }
@@ -254,10 +257,11 @@ export class AcpConnection {
       case 'opencode':
       case 'copilot':
       case 'qoder':
+      case 'codebuddy':
         if (!cliPath) {
           throw new Error(`CLI path is required for ${backend} backend`);
         }
-        await this.connectGenericBackend(backend, cliPath, workingDir, acpArgs);
+        await this.connectGenericBackend(backend, cliPath, workingDir, acpArgs, customEnv);
         break;
 
       case 'custom':
@@ -554,6 +558,15 @@ export class AcpConnection {
     try {
       // 优先检查是否为 request/notification（有 method 字段）
       if ('method' in message) {
+        // Handle CodeBuddy-specific authUrl notification
+        if (message.method === '_codebuddy.ai/authUrl') {
+          const params = (message as any).params;
+          if (params?.url) {
+            console.log('[AcpConnection] CodeBuddy authUrl received:', params.url);
+            this.onAuthUrlRequired(params.url);
+          }
+          return;
+        }
         // 直接传递给 handleIncomingRequest，switch 会过滤未知 method
         this.handleIncomingRequest(message as AcpIncomingMessage).catch((_error) => {
           // Handle request errors silently

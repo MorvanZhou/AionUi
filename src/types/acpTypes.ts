@@ -51,6 +51,7 @@ export type AcpBackendAll =
   | 'opencode' // OpenCode CLI
   | 'copilot' // GitHub Copilot CLI
   | 'qoder' // Qoder CLI
+  | 'codebuddy' // CodeBuddy AI CLI (ACP protocol support)
   | 'openclaw-gateway' // OpenClaw Gateway WebSocket
   | 'custom'; // User-configured custom ACP agent
 
@@ -386,6 +387,25 @@ export const ACP_BACKENDS_ALL: Record<AcpBackendAll, AcpBackendConfig> = {
     enabled: true, // ✅ Qoder CLI，使用 `qodercli --acp` 启动
     supportsStreaming: false,
     acpArgs: ['--acp'], // qoder 使用 --acp flag
+  },
+  codebuddy: {
+    id: 'codebuddy',
+    name: 'CodeBuddy',
+    nameI18n: {
+      'zh-CN': 'CodeBuddy',
+      'en-US': 'CodeBuddy',
+    },
+    cliCommand: 'codebuddy',
+    defaultCliPath: 'codebuddy',
+    authRequired: false,
+    enabled: true, // ✅ CodeBuddy CLI，使用 `codebuddy --acp` 启动
+    supportsStreaming: true,
+    acpArgs: ['--acp'], // CodeBuddy 使用标准 --acp flag
+    description: 'CodeBuddy AI coding assistant',
+    descriptionI18n: {
+      'zh-CN': 'CodeBuddy AI 代码助手，支持多语言编程和完整工作流',
+      'en-US': 'CodeBuddy AI coding assistant with multi-language support and complete workflows',
+    },
   },
   'openclaw-gateway': {
     id: 'openclaw-gateway',
