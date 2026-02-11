@@ -290,7 +290,7 @@ A: 所有对话数据存储在本地 SQLite 数据库，不会上传到任何服
 
 ## 🎬 看看大家如何使用 AionUi
 
-_观看创作者们如何测评和使用 AionUi_
+\_观看创作者们如何测评和使用 AionUi
 
 <p align="center">
   <a href="https://www.youtube.com/watch?v=yUU5E-U5B3M" target="_blank">

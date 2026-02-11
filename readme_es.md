@@ -264,7 +264,7 @@ A: Todos los datos de conversación se almacenan en una base de datos SQLite loc
 
 ## 🎬 Mira cómo la gente usa AionUi
 
-_Mira cómo los creadores de contenido reseñan y usan AionUi_
+\_Mira cómo los creadores de contenido reseñan y usan AionUi
 
 <p align="center">
   <a href="https://www.youtube.com/watch?v=yUU5E-U5B3M" target="_blank">

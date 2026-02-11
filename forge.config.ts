@@ -66,7 +66,7 @@ const resolveLoggerPort = (devPort: number, devPortOverridden: boolean): number 
 const { port: devServerPort, overridden: isDevPortOverridden } = resolveDevServerPort();
 const loggerPort = resolveLoggerPort(devServerPort, isDevPortOverridden);
 
-const apkName = 'AionUi_' + packageJson.version + '_' + (process.env.arch || process.arch);
+const apkName = 'AionUi' + packageJson.version + '_' + (process.env.arch || process.arch);
 const skipNativeRebuild = process.env.FORGE_SKIP_NATIVE_REBUILD === 'true';
 
 // Use target arch from build script, not host arch

@@ -264,7 +264,7 @@ A: 所有對話資料儲存在本地 SQLite 資料庫，不會上傳到任何伺
 
 ## 🎬 看看大家如何使用 AionUi
 
-_觀看創作者們如何測評和使用 AionUi_
+\_觀看創作者們如何測評和使用 AionUi
 
 <p align="center">
   <a href="https://www.youtube.com/watch?v=yUU5E-U5B3M" target="_blank">

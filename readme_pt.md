@@ -264,7 +264,7 @@ A: Todos os dados de conversas são armazenados em um banco SQLite local e não 
 
 ## 🎬 Veja como as pessoas usam o AionUi
 
-_Assista como os criadores de conteúdo avaliam e usam o AionUi_
+\_Assista como os criadores de conteúdo avaliam e usam o AionUi
 
 <p align="center">
   <a href="https://www.youtube.com/watch?v=yUU5E-U5B3M" target="_blank">

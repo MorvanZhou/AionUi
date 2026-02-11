@@ -286,13 +286,13 @@ apt install -y \
 ```bash
 # Download the ARM64 .deb package (replace VERSION with the actual version)
 # Check latest version at: https://github.com/iOfficeAI/AionUi/releases
-wget https://github.com/iOfficeAI/AionUi/releases/download/vVERSION/AionUi_VERSION_arm64.deb
+wget https://github.com/iOfficeAI/AionUi/releases/download/vVERSION/AionUiVERSION_arm64.deb
 
 # Example (replace VERSION with the release tag, e.g. v1.5.2):
-wget https://github.com/iOfficeAI/AionUi/releases/download/vVERSION/AionUi_VERSION_arm64.deb
+wget https://github.com/iOfficeAI/AionUi/releases/download/vVERSION/AionUiVERSION_arm64.deb
 
 # Install the package
-apt install -y ./AionUi_*.deb
+apt install -y ./AionUi*.deb
 
 # Verify installation
 which AionUi
